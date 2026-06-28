@@ -1,635 +1,84 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Otopark Plaka Kontrol</title>
-  <style>
-    :root {
-      --card: #ffffff;
-      --soft: #f8fafc;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --green: #16a34a;
-      --red: #dc2626;
-      --blue: #2563eb;
-      --orange: #f59e0b;
-      --dark: #111827;
-      --purple: #7c3aed;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: var(--text);
-    }
-
-    body {
-      padding: 10px;
-    }
-
-    .app {
-      max-width: 780px;
-      margin: 0 auto;
-      background: var(--card);
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.2);
-    }
-
-    .top {
-      padding: 18px;
-      background: linear-gradient(135deg, #eff6ff, #fff);
-      border-bottom: 1px solid var(--border);
-    }
-
-    h1 {
-      margin: 0 0 6px;
-      font-size: 24px;
-      letter-spacing: -0.3px;
-    }
-
-    .sub {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.35;
-    }
-
-    .content {
-      padding: 14px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .stat {
-      background: var(--soft);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 10px 8px;
-      text-align: center;
-    }
-
-    .label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 3px;
-    }
-
-    .value {
-      font-size: 24px;
-      font-weight: 900;
-      line-height: 1;
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .search,
-    textarea {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: #f8fafc;
-      font-size: 16px;
-      outline: none;
-    }
-
-    .search {
-      padding: 13px 14px;
-    }
-
-    .search:focus,
-    textarea:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
-      background: #fff;
-    }
-
-    .button-row,
-    .bottom-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    button {
-      border: 0;
-      border-radius: 15px;
-      padding: 13px 10px;
-      color: #fff;
-      font-weight: 800;
-      font-size: 15px;
-      cursor: pointer;
-      touch-action: manipulation;
-      min-height: 46px;
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
-    .btn-blue { background: var(--blue); }
-    .btn-green { background: var(--green); }
-    .btn-orange { background: var(--orange); }
-    .btn-red { background: var(--red); }
-    .btn-dark { background: var(--dark); }
-    .btn-purple { background: var(--purple); }
-
-    .plate-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-      min-height: 80px;
-      margin: 12px 0;
-    }
-
-    .plate {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px;
-      min-height: 58px;
-      user-select: none;
-    }
-
-    .plate.checked {
-      background: #ecfdf5;
-      border-color: #86efac;
-    }
-
-    .plate-main {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex: 1;
-      min-width: 0;
-      cursor: pointer;
-    }
-
-    .plate input {
-      width: 25px;
-      height: 25px;
-      accent-color: var(--green);
-      flex: 0 0 auto;
-    }
-
-    .plate-text {
-      font-size: 21px;
-      font-weight: 900;
-      letter-spacing: 0.8px;
-      overflow-wrap: anywhere;
-    }
-
-    .delete-one {
-      width: 38px;
-      height: 38px;
-      min-height: 38px;
-      padding: 0;
-      border-radius: 12px;
-      background: #fee2e2;
-      color: #991b1b;
-      font-size: 20px;
-      line-height: 1;
-      flex: 0 0 auto;
-    }
-
-    .empty {
-      text-align: center;
-      color: var(--muted);
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
-      border-radius: 16px;
-      padding: 22px 12px;
-      line-height: 1.4;
-    }
-
-    .add-panel {
-      margin-top: 12px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 12px;
-      display: none;
-    }
-
-    .add-panel.open {
-      display: block;
-    }
-
-    .panel-title {
-      font-weight: 900;
-      margin-bottom: 8px;
-      font-size: 16px;
-    }
-
-    textarea {
-      min-height: 140px;
-      resize: vertical;
-      padding: 12px;
-      font-family: inherit;
-      background: #fff;
-      line-height: 1.35;
-    }
-
-    .hint {
-      margin: 8px 0 10px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    .message,
-    .danger-note {
-      display: none;
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      font-size: 14px;
-      line-height: 1.35;
-      white-space: pre-wrap;
-    }
-
-    .message {
-      background: #eff6ff;
-      color: #1e3a8a;
-    }
-
-    .danger-note {
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
-
-    .output {
-      display: none;
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 16px;
-      background: #111827;
-      color: #fff;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      white-space: pre-wrap;
-      font-size: 14px;
-      line-height: 1.5;
-      user-select: text;
-    }
-
-    @media (min-width: 620px) {
-      .plate-list {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .controls {
-        grid-template-columns: 1fr auto;
-        align-items: center;
-      }
-
-      .button-row {
-        grid-template-columns: repeat(2, 145px);
-      }
-
-      .bottom-buttons {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-
-    @media (max-width: 420px) {
-      body { padding: 8px; }
-      .content { padding: 12px; }
-      h1 { font-size: 22px; }
-      .plate-text { font-size: 20px; }
-      .value { font-size: 22px; }
-      button { font-size: 14px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<meta name="theme-color" content="#07111f">
+<title>Otopark Plaka Kontrol</title>
+<style>
+:root{--text:#f8fafc;--muted:#94a3b8;--border:#334155;--green:#22c55e;--orange:#f59e0b;--red:#ef4444;--blue:#2563eb}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at top left,rgba(37,99,235,.3),transparent 34%),linear-gradient(135deg,#020617,#0f172a 58%,#111827);color:var(--text)}
+body{padding:10px}
+.app{width:100%;max-width:780px;margin:0 auto;background:rgba(13,27,46,.96);border:1px solid rgba(148,163,184,.25);border-radius:22px;overflow:hidden;box-shadow:0 18px 45px rgba(0,0,0,.45)}
+.top{padding:20px 18px 16px;background:linear-gradient(135deg,rgba(15,23,42,.96),rgba(30,41,59,.82));border-bottom:1px solid var(--border)}
+h1{margin:0 0 8px;font-size:24px;letter-spacing:-.3px;line-height:1.1}.sub{margin:0;color:var(--muted);font-size:14px;line-height:1.45}.content{padding:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat{background:linear-gradient(180deg,#0f1f35,#0b1728);border:1px solid var(--border);border-radius:16px;padding:12px 8px;text-align:center}.stat:nth-child(1){border-color:rgba(37,99,235,.72)}.stat:nth-child(2){border-color:rgba(34,197,94,.72)}.stat:nth-child(3){border-color:rgba(245,158,11,.72)}
+.label{font-size:12px;color:var(--muted);margin-bottom:5px}.value{font-size:25px;font-weight:900;line-height:1}
+.controls{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}.search-wrap{position:relative}.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:17px;pointer-events:none}
+.search,textarea{width:100%;border:1px solid var(--border);border-radius:15px;background:#091527;color:var(--text);font-size:16px;outline:none}.search{padding:14px 14px 14px 42px}.search::placeholder,textarea::placeholder{color:#64748b}.search:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.18);background:#0b1628}
+.button-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}button{border:0;border-radius:15px;padding:13px 10px;color:#fff;font-weight:800;font-size:15px;cursor:pointer;touch-action:manipulation;min-height:46px}button:active{transform:scale(.98)}
+.btn-green{background:linear-gradient(135deg,#16a34a,#15803d);border:1px solid rgba(34,197,94,.45)}.btn-orange{background:linear-gradient(135deg,#f59e0b,#b45309);border:1px solid rgba(245,158,11,.45)}
+.plate-list{display:grid;grid-template-columns:1fr;gap:8px;min-height:80px;margin:12px 0}.plate{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(180deg,#13243a,#0f1e33);border:1px solid var(--border);border-radius:16px;padding:12px;min-height:58px;user-select:none}.plate.checked{background:linear-gradient(180deg,rgba(22,101,52,.58),rgba(20,83,45,.45));border-color:rgba(34,197,94,.85)}
+.plate-main{display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer}.plate input{width:25px;height:25px;accent-color:var(--green);flex:0 0 auto}.plate-text{font-size:21px;font-weight:900;letter-spacing:.8px;overflow-wrap:anywhere}.delete-one{width:38px;height:38px;min-height:38px;padding:0;border-radius:12px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.45);color:#f87171;font-size:20px;line-height:1;flex:0 0 auto}
+.empty{text-align:center;color:var(--muted);background:rgba(15,23,42,.65);border:1px dashed #475569;border-radius:16px;padding:24px 14px;line-height:1.45}
+.bottom-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:rgba(15,23,42,.72);border:1px solid var(--border);border-radius:18px;padding:8px;overflow:hidden;margin-top:10px}.menu-btn{background:transparent;border-radius:0;min-height:76px;padding:8px 6px;color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border-right:1px solid rgba(148,163,184,.18)}.menu-btn:last-child{border-right:0}.menu-label{font-size:12px;font-weight:800;line-height:1.15;color:#e5e7eb}.menu-icon{width:34px;height:34px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900;line-height:1}
+.menu-blue .menu-icon{color:#38bdf8;border:2px solid #0284c7;background:rgba(14,165,233,.12)}.menu-green .menu-icon{color:#4ade80;border:2px solid #22c55e;background:rgba(34,197,94,.12)}.menu-orange .menu-icon{color:#facc15;border:2px solid #eab308;background:rgba(234,179,8,.12)}.menu-red .menu-icon{color:#f87171;border:2px solid #ef4444;background:rgba(239,68,68,.12)}
+.add-panel{margin-top:12px;background:#0b1628;border:1px solid var(--border);border-radius:18px;padding:12px;display:none}.add-panel.open{display:block}.panel-title{font-weight:900;margin-bottom:8px;font-size:16px}textarea{min-height:145px;resize:vertical;padding:12px;font-family:inherit;line-height:1.35}.hint{margin:8px 0 10px;color:var(--muted);font-size:13px;line-height:1.35}
+.message,.danger-note{display:none;margin-top:10px;padding:10px 12px;border-radius:14px;font-size:14px;line-height:1.35;white-space:pre-wrap}.message{background:rgba(37,99,235,.14);color:#bfdbfe;border:1px solid rgba(37,99,235,.35)}.danger-note{background:rgba(239,68,68,.12);color:#fecaca;border:1px solid rgba(239,68,68,.35)}
+.output{display:none;margin-top:12px;padding:12px;border-radius:16px;background:#020617;color:#fff;border:1px solid #334155;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:pre-wrap;font-size:14px;line-height:1.5;user-select:text}
+@media(min-width:620px){.plate-list{grid-template-columns:1fr 1fr}.controls{grid-template-columns:1fr auto;align-items:center}.button-row{grid-template-columns:repeat(2,145px)}}@media(max-width:420px){body{padding:8px}.content{padding:12px}h1{font-size:22px}.plate-text{font-size:20px}.value{font-size:22px}button{font-size:14px}.bottom-buttons{padding:6px}.menu-btn{min-height:72px;padding:7px 4px}.menu-label{font-size:11px}.menu-icon{width:31px;height:31px;font-size:19px}}
+</style>
 </head>
-
 <body>
-  <main class="app">
-    <section class="top">
-      <h1>Otopark Plaka Kontrol</h1>
-      <p class="sub">Plakaları ekle, doğruladıklarını tikle. Liste bu cihazdaki Safari/tarayıcı hafızasında saklanır.</p>
-    </section>
-
-    <section class="content">
-      <div class="stats">
-        <div class="stat">
-          <div class="label">Toplam</div>
-          <div class="value" id="totalCount">0</div>
-        </div>
-        <div class="stat">
-          <div class="label">Tikli</div>
-          <div class="value" id="checkedCount">0</div>
-        </div>
-        <div class="stat">
-          <div class="label">Tiksiz</div>
-          <div class="value" id="uncheckedCount">0</div>
-        </div>
-      </div>
-
-      <div class="controls">
-        <input class="search" id="searchInput" type="text" placeholder="Plaka ara..." autocomplete="off">
-        <div class="button-row">
-          <button class="btn-green" id="checkVisibleBtn">Görünenleri Tikle</button>
-          <button class="btn-orange" id="clearTicksBtn">Tikleri Temizle</button>
-        </div>
-      </div>
-
-      <div id="plateList" class="plate-list"></div>
-
-      <div class="bottom-buttons">
-        <button class="btn-blue" id="toggleAddBtn">Plaka Ekle</button>
-        <button class="btn-purple" id="showCheckedBtn">Tiklenenleri Göster</button>
-        <button class="btn-dark" id="showUncheckedBtn">Tiksizleri Göster</button>
-        <button class="btn-red" id="clearPlatesBtn">Plakaları Temizle</button>
-      </div>
-
-      <div id="addPanel" class="add-panel">
-        <div class="panel-title">Plaka Ekle</div>
-        <textarea id="plateTextarea" placeholder="Plakaları alt alta yapıştır:
+<main class="app">
+<section class="top"><h1>Otopark Plaka Kontrol</h1><p class="sub">Plakaları ekle, doğruladıklarını tikle. Liste bu cihazdaki Safari/tarayıcı hafızasında saklanır.</p></section>
+<section class="content">
+<div class="stats"><div class="stat"><div class="label">Toplam</div><div class="value" id="totalCount">0</div></div><div class="stat"><div class="label">Tikli</div><div class="value" id="checkedCount">0</div></div><div class="stat"><div class="label">Tiksiz</div><div class="value" id="uncheckedCount">0</div></div></div>
+<div class="controls"><div class="search-wrap"><span class="search-icon">⌕</span><input class="search" id="searchInput" type="text" placeholder="Plaka ara..." autocomplete="off"></div><div class="button-row"><button class="btn-green" id="checkVisibleBtn">Görünenleri Tikle</button><button class="btn-orange" id="clearTicksBtn">Tikleri Temizle</button></div></div>
+<div id="plateList" class="plate-list"></div>
+<div class="bottom-buttons">
+<button class="menu-btn menu-blue" id="toggleAddBtn"><span class="menu-icon">＋</span><span class="menu-label">Plaka Ekle</span></button>
+<button class="menu-btn menu-green" id="showCheckedBtn"><span class="menu-icon">✓</span><span class="menu-label">Tiklenenleri<br>Göster</span></button>
+<button class="menu-btn menu-orange" id="showUncheckedBtn"><span class="menu-icon">◎</span><span class="menu-label">Tiksizleri<br>Göster</span></button>
+<button class="menu-btn menu-red" id="clearPlatesBtn"><span class="menu-icon">🗑</span><span class="menu-label">Plakaları<br>Temizle</span></button>
+</div>
+<div id="addPanel" class="add-panel"><div class="panel-title">Plaka Ekle</div><textarea id="plateTextarea" placeholder="Plakaları alt alta yapıştır:
 35ABC123
 34XYZ45
-48YY528"></textarea>
-        <p class="hint">Her satıra bir plaka yaz. Boş satırlar atlanır. Aynı plaka ikinci kez eklenmez. Plakalar otomatik büyük harfe çevrilir.</p>
-        <div class="button-row">
-          <button class="btn-green" id="addPlatesBtn">Ekle</button>
-          <button class="btn-dark" id="closeAddBtn">Kapat</button>
-        </div>
-        <div id="message" class="message"></div>
-      </div>
-
-      <div id="dangerNote" class="danger-note"></div>
-      <div id="output" class="output"></div>
-    </section>
-  </main>
-
-  <script>
-    const STORAGE_KEY = "ios_otopark_plaka_kontrol_v3_empty_start";
-    const defaultData = [];
-
-    let plates = loadData();
-
-    const plateList = document.getElementById("plateList");
-    const totalCount = document.getElementById("totalCount");
-    const checkedCount = document.getElementById("checkedCount");
-    const uncheckedCount = document.getElementById("uncheckedCount");
-    const searchInput = document.getElementById("searchInput");
-    const addPanel = document.getElementById("addPanel");
-    const plateTextarea = document.getElementById("plateTextarea");
-    const message = document.getElementById("message");
-    const output = document.getElementById("output");
-    const dangerNote = document.getElementById("dangerNote");
-
-    document.getElementById("toggleAddBtn").addEventListener("click", toggleAddPanel);
-    document.getElementById("closeAddBtn").addEventListener("click", closeAddPanel);
-    document.getElementById("addPlatesBtn").addEventListener("click", addPlates);
-    document.getElementById("clearTicksBtn").addEventListener("click", clearTicks);
-    document.getElementById("clearPlatesBtn").addEventListener("click", clearPlates);
-    document.getElementById("showCheckedBtn").addEventListener("click", () => showList(true));
-    document.getElementById("showUncheckedBtn").addEventListener("click", () => showList(false));
-    document.getElementById("checkVisibleBtn").addEventListener("click", checkVisible);
-    searchInput.addEventListener("input", render);
-
-    function loadData() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (!saved) return [...defaultData];
-
-        const parsed = JSON.parse(saved);
-        if (!Array.isArray(parsed)) return [...defaultData];
-
-        const cleaned = [];
-        const seen = new Set();
-
-        parsed.forEach(item => {
-          if (!item || typeof item.plate !== "string") return;
-
-          const plate = normalizePlate(item.plate);
-          if (!plate || seen.has(plate)) return;
-
-          seen.add(plate);
-          cleaned.push({ plate, checked: !!item.checked });
-        });
-
-        return cleaned;
-      } catch (e) {
-        return [...defaultData];
-      }
-    }
-
-    function saveData() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(plates));
-    }
-
-    function normalizePlate(value) {
-      return String(value)
-        .trim()
-        .replace(/\s+/g, "")
-        .toLocaleUpperCase("tr-TR");
-    }
-
-    function render() {
-      const filter = normalizePlate(searchInput.value);
-      plateList.innerHTML = "";
-
-      const visible = plates.filter(item => item.plate.includes(filter));
-
-      if (visible.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = plates.length === 0
-          ? "Henüz plaka yok. Alttaki Plaka Ekle butonuyla plaka ekleyebilirsin."
-          : "Aramayla eşleşen plaka yok.";
-        plateList.appendChild(empty);
-        updateStats();
-        return;
-      }
-
-      visible.forEach(item => {
-        const row = document.createElement("div");
-        row.className = "plate" + (item.checked ? " checked" : "");
-
-        const label = document.createElement("label");
-        label.className = "plate-main";
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = item.checked;
-        checkbox.addEventListener("change", () => {
-          item.checked = checkbox.checked;
-          saveData();
-          render();
-        });
-
-        const span = document.createElement("span");
-        span.className = "plate-text";
-        span.textContent = item.plate;
-
-        const deleteButton = document.createElement("button");
-        deleteButton.className = "delete-one";
-        deleteButton.type = "button";
-        deleteButton.textContent = "×";
-        deleteButton.title = "Bu plakayı sil";
-        deleteButton.addEventListener("click", () => deletePlate(item.plate));
-
-        label.appendChild(checkbox);
-        label.appendChild(span);
-        row.appendChild(label);
-        row.appendChild(deleteButton);
-        plateList.appendChild(row);
-      });
-
-      updateStats();
-    }
-
-    function updateStats() {
-      const total = plates.length;
-      const checked = plates.filter(item => item.checked).length;
-
-      totalCount.textContent = total;
-      checkedCount.textContent = checked;
-      uncheckedCount.textContent = total - checked;
-    }
-
-    function toggleAddPanel() {
-      addPanel.classList.toggle("open");
-      message.style.display = "none";
-      output.style.display = "none";
-      dangerNote.style.display = "none";
-
-      if (addPanel.classList.contains("open")) {
-        setTimeout(() => plateTextarea.focus(), 80);
-      }
-    }
-
-    function closeAddPanel() {
-      addPanel.classList.remove("open");
-    }
-
-    function addPlates() {
-      const candidates = plateTextarea.value
-        .split(/\n|,|;|\t/g)
-        .map(normalizePlate)
-        .filter(Boolean);
-
-      const existing = new Set(plates.map(item => item.plate));
-      let added = 0;
-      let duplicates = 0;
-
-      candidates.forEach(plate => {
-        if (existing.has(plate)) {
-          duplicates++;
-          return;
-        }
-
-        plates.push({ plate, checked: false });
-        existing.add(plate);
-        added++;
-      });
-
-      saveData();
-      plateTextarea.value = "";
-      render();
-
-      message.textContent = added + " plaka eklendi." + (duplicates ? "\n" + duplicates + " tekrar eden plaka eklenmedi." : "");
-      message.style.display = "block";
-    }
-
-    function clearTicks() {
-      if (plates.length === 0) {
-        showNote("Temizlenecek tik yok.");
-        return;
-      }
-
-      plates.forEach(item => item.checked = false);
-      saveData();
-      output.style.display = "none";
-      dangerNote.style.display = "none";
-      render();
-    }
-
-    function clearPlates() {
-      if (plates.length === 0) {
-        showNote("Silinecek plaka yok.");
-        return;
-      }
-
-      if (!confirm("Tüm plakalar silinsin mi? Bu işlem geri alınamaz.")) return;
-
-      plates = [];
-      saveData();
-      output.style.display = "none";
-      dangerNote.style.display = "none";
-      render();
-    }
-
-    function deletePlate(plate) {
-      if (!confirm(plate + " silinsin mi?")) return;
-
-      plates = plates.filter(item => item.plate !== plate);
-      saveData();
-      output.style.display = "none";
-      render();
-    }
-
-    function showList(wantedChecked) {
-      const selected = plates
-        .filter(item => item.checked === wantedChecked)
-        .map(item => item.plate);
-
-      output.textContent =
-        (wantedChecked ? "TİKLENEN PLAKALAR" : "TİKSİZ PLAKALAR") +
-        " (" + selected.length + "):\n" +
-        (selected.length ? selected.join("\n") : "Yok.");
-
-      output.style.display = "block";
-      dangerNote.style.display = "none";
-    }
-
-    function checkVisible() {
-      const filter = normalizePlate(searchInput.value);
-      let changed = 0;
-
-      plates.forEach(item => {
-        if (item.plate.includes(filter) && !item.checked) {
-          item.checked = true;
-          changed++;
-        }
-      });
-
-      saveData();
-      render();
-      showNote(changed + " görünen plaka tiklendi.");
-    }
-
-    function showNote(text) {
-      dangerNote.textContent = text;
-      dangerNote.style.display = "block";
-    }
-
-    render();
-  </script>
+48YY528"></textarea><p class="hint">Her satıra bir plaka yaz. Boş satırlar atlanır. Aynı plaka ikinci kez eklenmez. Plakalar otomatik büyük harfe çevrilir.</p><div class="button-row"><button class="btn-green" id="addPlatesBtn">Ekle</button><button class="btn-orange" id="closeAddBtn">Kapat</button></div><div id="message" class="message"></div></div>
+<div id="dangerNote" class="danger-note"></div><div id="output" class="output"></div>
+</section>
+</main>
+<script>
+const STORAGE_KEY="ios_otopark_plaka_kontrol_dark_icon_v1";
+const defaultData=[];
+let plates=loadData();
+const plateList=document.getElementById("plateList"),totalCount=document.getElementById("totalCount"),checkedCount=document.getElementById("checkedCount"),uncheckedCount=document.getElementById("uncheckedCount"),searchInput=document.getElementById("searchInput"),addPanel=document.getElementById("addPanel"),plateTextarea=document.getElementById("plateTextarea"),message=document.getElementById("message"),output=document.getElementById("output"),dangerNote=document.getElementById("dangerNote");
+document.getElementById("toggleAddBtn").addEventListener("click",toggleAddPanel);
+document.getElementById("closeAddBtn").addEventListener("click",closeAddPanel);
+document.getElementById("addPlatesBtn").addEventListener("click",addPlates);
+document.getElementById("clearTicksBtn").addEventListener("click",clearTicks);
+document.getElementById("clearPlatesBtn").addEventListener("click",clearPlates);
+document.getElementById("showCheckedBtn").addEventListener("click",()=>showList(true));
+document.getElementById("showUncheckedBtn").addEventListener("click",()=>showList(false));
+document.getElementById("checkVisibleBtn").addEventListener("click",checkVisible);
+searchInput.addEventListener("input",render);
+function loadData(){try{const saved=localStorage.getItem(STORAGE_KEY);if(!saved)return[...defaultData];const parsed=JSON.parse(saved);if(!Array.isArray(parsed))return[...defaultData];const cleaned=[],seen=new Set();parsed.forEach(item=>{if(!item||typeof item.plate!=="string")return;const plate=normalizePlate(item.plate);if(!plate||seen.has(plate))return;seen.add(plate);cleaned.push({plate,checked:!!item.checked})});return cleaned}catch(e){return[...defaultData]}}
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(plates))}
+function normalizePlate(value){return String(value).trim().replace(/\s+/g,"").toLocaleUpperCase("tr-TR")}
+function render(){const filter=normalizePlate(searchInput.value);plateList.innerHTML="";const visible=plates.filter(item=>item.plate.includes(filter));if(visible.length===0){const empty=document.createElement("div");empty.className="empty";empty.textContent=plates.length===0?"Henüz plaka yok. Alttaki Plaka Ekle butonuyla plaka ekleyebilirsin.":"Aramayla eşleşen plaka yok.";plateList.appendChild(empty);updateStats();return}visible.forEach(item=>{const row=document.createElement("div");row.className="plate"+(item.checked?" checked":"");const label=document.createElement("label");label.className="plate-main";const checkbox=document.createElement("input");checkbox.type="checkbox";checkbox.checked=item.checked;checkbox.addEventListener("change",()=>{item.checked=checkbox.checked;saveData();render()});const span=document.createElement("span");span.className="plate-text";span.textContent=item.plate;const del=document.createElement("button");del.className="delete-one";del.type="button";del.textContent="×";del.title="Bu plakayı sil";del.addEventListener("click",()=>deletePlate(item.plate));label.appendChild(checkbox);label.appendChild(span);row.appendChild(label);row.appendChild(del);plateList.appendChild(row)});updateStats()}
+function updateStats(){const total=plates.length,checked=plates.filter(item=>item.checked).length;totalCount.textContent=total;checkedCount.textContent=checked;uncheckedCount.textContent=total-checked}
+function toggleAddPanel(){addPanel.classList.toggle("open");message.style.display="none";output.style.display="none";dangerNote.style.display="none";if(addPanel.classList.contains("open"))setTimeout(()=>plateTextarea.focus(),80)}
+function closeAddPanel(){addPanel.classList.remove("open")}
+function addPlates(){const candidates=plateTextarea.value.split(/\n|,|;|\t/g).map(normalizePlate).filter(Boolean);const existing=new Set(plates.map(item=>item.plate));let added=0,duplicates=0;candidates.forEach(plate=>{if(existing.has(plate)){duplicates++;return}plates.push({plate,checked:false});existing.add(plate);added++});saveData();plateTextarea.value="";render();message.textContent=added+" plaka eklendi."+(duplicates?"\n"+duplicates+" tekrar eden plaka eklenmedi.":"");message.style.display="block"}
+function clearTicks(){if(plates.length===0){showNote("Temizlenecek tik yok.");return}plates.forEach(item=>item.checked=false);saveData();output.style.display="none";dangerNote.style.display="none";render()}
+function clearPlates(){if(plates.length===0){showNote("Silinecek plaka yok.");return}if(!confirm("Tüm plakalar silinsin mi? Bu işlem geri alınamaz."))return;plates=[];saveData();output.style.display="none";dangerNote.style.display="none";render()}
+function deletePlate(plate){if(!confirm(plate+" silinsin mi?"))return;plates=plates.filter(item=>item.plate!==plate);saveData();output.style.display="none";render()}
+function showList(wanted){const selected=plates.filter(item=>item.checked===wanted).map(item=>item.plate);output.textContent=(wanted?"TİKLENEN PLAKALAR":"TİKSİZ PLAKALAR")+" ("+selected.length+"):\n"+(selected.length?selected.join("\n"):"Yok.");output.style.display="block";dangerNote.style.display="none"}
+function checkVisible(){const filter=normalizePlate(searchInput.value);let changed=0;plates.forEach(item=>{if(item.plate.includes(filter)&&!item.checked){item.checked=true;changed++}});saveData();render();showNote(changed+" görünen plaka tiklendi.")}
+function showNote(text){dangerNote.textContent=text;dangerNote.style.display="block"}
+render();
+</script>
 </body>
 </html>
